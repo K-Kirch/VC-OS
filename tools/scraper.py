@@ -40,7 +40,7 @@ HEADERS = {
 
 REQUEST_TIMEOUT = 12
 POLITE_DELAY = 0.8       # seconds between requests
-MAX_CHARS_PER_PAGE = 4000  # cap per page to avoid flooding Claude's context
+MAX_CHARS_PER_PAGE = 6000  # cap per page — raised from 4000 to capture more portfolio/team data
 
 # Tags to strip before extracting text
 STRIP_TAGS = ["script", "style", "nav", "footer", "iframe", "noscript",
@@ -61,6 +61,10 @@ SUB_PAGE_CANDIDATES = {
         "/strategy", "/how-we-invest", "/manifesto", "/focus"
     ],
 }
+
+# SPA detection: if a sub-page shares this many leading characters with the
+# homepage, it almost certainly returned the same shell HTML (client-side routing).
+SPA_FINGERPRINT_LEN = 300
 
 
 # ---------------------------------------------------------------------------
@@ -106,7 +110,7 @@ def find_sub_page(base_url: str, homepage_soup: "BeautifulSoup", content_type: s
     """
     Try to find the best URL for a content type by:
     1. Matching nav/link hrefs against known candidate paths
-    2. Falling back to trying candidate paths directly
+    2. Falling back to the first candidate path directly
     """
     root = base_root(base_url)
     candidates = SUB_PAGE_CANDIDATES.get(content_type, [])
@@ -131,10 +135,9 @@ def find_sub_page(base_url: str, homepage_soup: "BeautifulSoup", content_type: s
                         parsed.path.lower().rstrip("/") == candidate.rstrip("/")):
                     return full
 
-    # Direct fallback — try the first candidate path
-    for candidate in candidates:
-        return root + candidate
-
+    # Direct fallback — try the most common path for this content type
+    if candidates:
+        return root + candidates[0]
     return None
 
 
@@ -143,6 +146,24 @@ def detect_js_only(text: str | None) -> bool:
     if text is None:
         return True
     return len(text.strip()) < 200
+
+
+def is_spa_duplicate(sub_text: str, home_text: str) -> bool:
+    """
+    Return True if a sub-page returned the same shell HTML as the homepage.
+
+    SPAs using client-side routing (React Router, Next.js, etc.) often return the
+    homepage HTML skeleton for every URL — the actual content is injected by JS
+    after page load. requests/BeautifulSoup can't run JS, so all sub-pages look
+    identical to the homepage.
+
+    Detection: compare the first SPA_FINGERPRINT_LEN characters. If they match,
+    it's almost certainly the same HTML shell, not unique page content.
+    """
+    if not sub_text or not home_text:
+        return False
+    fp_len = min(SPA_FINGERPRINT_LEN, len(sub_text), len(home_text))
+    return sub_text[:fp_len] == home_text[:fp_len]
 
 
 # ---------------------------------------------------------------------------
@@ -184,6 +205,9 @@ def scrape_fund(name: str, url: str, use_playwright: bool = False) -> str:
     output.append(f"URL:  {url}")
     output.append("=" * 60)
 
+    # Track fetch results for summary
+    fetch_results = {}
+
     # --- Homepage ---
     home_text, home_soup = fetch(url, session)
 
@@ -201,6 +225,7 @@ def scrape_fund(name: str, url: str, use_playwright: bool = False) -> str:
     if home_text:
         output.append(f"\n--- HOMEPAGE ({url}) ---")
         output.append(home_text[:MAX_CHARS_PER_PAGE])
+        fetch_results["homepage"] = "ok"
     else:
         output.append(f"\nERROR: Could not fetch homepage ({url}). Check the URL and try again.")
         return "\n".join(output)
@@ -211,6 +236,7 @@ def scrape_fund(name: str, url: str, use_playwright: bool = False) -> str:
     for content_type in ["team", "portfolio", "thesis"]:
         sub_url = find_sub_page(url, home_soup, content_type)
         if not sub_url or sub_url in fetched_urls:
+            fetch_results[content_type] = "skipped (same url as homepage or not found)"
             continue
 
         time.sleep(POLITE_DELAY)
@@ -221,14 +247,37 @@ def scrape_fund(name: str, url: str, use_playwright: bool = False) -> str:
         if detect_js_only(text) and use_playwright:
             text, _ = fetch_with_playwright(sub_url)
 
-        if text:
+        if text and is_spa_duplicate(text, home_text):
+            output.append(
+                f"\n--- {content_type.upper()} PAGE: {sub_url} ---"
+                f"\nWARNING: This page returned content identical to the homepage.\n"
+                f"The site uses client-side routing (SPA) — requests cannot execute JavaScript.\n"
+                f"Re-run with --playwright to get real content from this page.\n"
+            )
+            fetch_results[content_type] = f"spa_duplicate ({sub_url})"
+        elif text:
             output.append(f"\n--- {content_type.upper()} PAGE ({sub_url}) ---")
             output.append(text[:MAX_CHARS_PER_PAGE])
             fetched_urls.add(sub_url)
+            fetch_results[content_type] = "ok"
         else:
             output.append(f"\n--- {content_type.upper()} PAGE: could not fetch {sub_url} ---")
+            fetch_results[content_type] = f"fetch_failed ({sub_url})"
 
+    # --- Fetch summary ---
     output.append("\n" + "=" * 60)
+    output.append("SCRAPE SUMMARY")
+    output.append("-" * 40)
+    for page, result in fetch_results.items():
+        flag = "OK " if result == "ok" else "!!!"
+        output.append(f"  {flag}  {page}: {result}")
+    output.append(
+        "\nNote: Fields populated from this scrape are reliable [S].\n"
+        "Fields not covered here (team LinkedIn, check size, fund size, portfolio companies\n"
+        "not on the website) will need manual research and should be tagged [M] if filled\n"
+        "from AI memory. See _config/data-conventions.md."
+    )
+    output.append("=" * 60)
     output.append("END OF SCRAPE")
     return "\n".join(output)
 

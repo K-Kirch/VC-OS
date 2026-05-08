@@ -4,6 +4,7 @@
 
 | Fund | Stage | Sectors | Quality | Brief |
 |---|---|---|---|---|
+| [Northzone](northzone/brief.md) | Seed, Series A, Series B, Growth | Consumer, Enterprise SaaS, Fintech, Health | 3 | [brief](northzone/brief.md) |
 | [Accel](accel/brief.md) | Series A, Series B | SaaS, Consumer, Fintech | 1 stub | — |
 
 ---
@@ -18,5 +19,5 @@
 
 ## Quick Reference by Stage
 
-**Seed – Series A:** —
+**Seed – Growth:** [Northzone](northzone/brief.md)
 **Series A – B:** [Accel](accel/brief.md) *(stub only)*

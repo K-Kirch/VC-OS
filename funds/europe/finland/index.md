@@ -4,7 +4,7 @@
 
 | Fund | Stage | Sectors | Quality | Brief |
 |---|---|---|---|---|
-| — | | | | |
+| [Inventure](inventure/brief.md) | Pre-Seed, Seed | AI, Healthtech, B2B SaaS, Deep Tech, Climate Tech | 3 | [brief](inventure/brief.md) |
 
 ---
 
@@ -18,4 +18,4 @@
 
 ## Quick Reference by Stage
 
-*Populate as funds are added.*
+**Pre-Seed / Seed:** [Inventure](inventure/brief.md), [byFounders](../denmark/byfounders/brief.md) *(Denmark HQ)*

@@ -1,5 +1,9 @@
 # [Fund Name] — Portfolio
 
+<!-- Source convention: [S] = scraped from website | [M] = AI memory, verify before live use | [V] = manually verified -->
+<!-- Portfolio pages from scrape [S] typically show only the most recent or featured companies. -->
+<!-- Companies added from memory should be tagged [M] in Source Completeness and treated as unverified. -->
+
 ## Summary
 
 | Metric | Value |
