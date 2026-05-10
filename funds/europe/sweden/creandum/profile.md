@@ -37,4 +37,4 @@
 
 ## Description
 
-Creandum is one of Europe's most established early-stage venture funds, backing seed-stage technology founders since 2003. Known for their "we don't make deals, we make commitments" philosophy, they emphasise long-term founder relationships over transactional investing. Their portfolio includes Spotify, Depop, Trade Republic, and Taxfix. [S — from website scrape 2026-05-07]
+Creandum is one of Europe's most established early-stage venture funds, backing seed-stage technology founders since 2003. Known for their "we don't make deals, we make commitments" philosophy, they emphasise long-term founder relationships over transactional investing. 152 total commitments including Spotify, Klarna, iZettle, Depop, Trade Republic, Pleo, and Bolt. [S — from website scrape 2026-05-10]

@@ -54,7 +54,7 @@ SUB_PAGE_CANDIDATES = {
         "/who-we-are", "/partners", "/our-partners", "/about"
     ],
     "portfolio": [
-        "/portfolio", "/companies", "/investments", "/our-portfolio",
+        "/portfolio", "/commitments", "/companies", "/investments", "/our-portfolio",
         "/our-companies", "/our-investments", "/ventures"
     ],
     "thesis": [
@@ -431,6 +431,10 @@ def scrape_fund(name: str, url: str, use_playwright: bool = False) -> str:
 # ---------------------------------------------------------------------------
 
 def main():
+    # Ensure UTF-8 output on Windows (avoids cp1252 UnicodeEncodeError on non-ASCII chars)
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
+
     parser = argparse.ArgumentParser(
         description="Scrape a VC fund website for VC OS fund population."
     )

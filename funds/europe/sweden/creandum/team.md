@@ -1,73 +1,68 @@
 # Creandum — Team
 
 <!-- Source convention: [S] = scraped from website | [M] = AI memory, verify before live use | [V] = manually verified -->
-<!-- This file was populated from AI training data [M]. Names and titles are plausible but not verified against -->
-<!-- the Creandum website (team page returned structured data via scrape but individual attribution is uncertain). -->
-<!-- Do not use notable investment attributions in live deal conversations without verifying on Crunchbase first. -->
+<!-- Team names and titles scraped [S] from creandum.com/team (2026-05-10). -->
+<!-- LinkedIn URLs and individual investment attribution require manual verification [M]. -->
 
-## General Partners
+## Investment Team
 
-### Johan Brenner
-| Field | Value |
-|---|---|
-| **Title** | General Partner |
-| **Focus** | Consumer, Fintech, Marketplace — Nordic and European ecosystem |
-| **Background** | Swedish entrepreneur and investor; joined Creandum early; backed Spotify, Klarna, iZettle |
-| **LinkedIn** | Unknown — verify |
-| **Twitter** | Unknown — verify |
-| **Contact Preference** | Warm intro preferred |
-
-**Notable Investments:** [M] — verify on Crunchbase before use
-- Spotify — seed-stage investment [M]
-- iZettle — Swedish payments, acquired by PayPal $2.2B [M]
-
----
-
-### Simon Schmincke
-| Field | Value |
-|---|---|
-| **Title** | General Partner |
-| **Focus** | Fintech, B2B SaaS, Consumer — German-speaking ecosystem and Europe |
-| **Background** | German; joined Creandum to build German presence; backed Trade Republic, Taxfix |
-| **LinkedIn** | Unknown — verify |
-| **Twitter** | Unknown — verify |
-| **Contact Preference** | Warm intro preferred |
-
-**Notable Investments:** [M] — verify on Crunchbase before use
-- Trade Republic — German retail investing platform (unicorn) [M]
-- Taxfix — German tax filing app [M]
+| Name | Location | Notes |
+|---|---|---|
+| Carl Fritjofsson | San Francisco | [S] |
+| Cam Sellers | London | [S] |
+| Clara Leise | Berlin | [S] |
+| Filip Mark | Stockholm | [S] |
+| Fredrik Cassel | Stockholm | [S] |
+| Ghazwa Khalatbari | San Francisco | [S] |
+| Hanel Baveja | London | [S] — backed GetVocal (2025), Cerrion (2025) |
+| Jakob Stein | Berlin | [S] — promoted to Partner 2026-05-06 |
+| Johan Brenner | Stockholm | [S] |
+| Kathi Wilhelm | Berlin | [S] |
+| Nelson Casata | London | [S] |
+| Peter Specht | London | [S] — backed Pave Space (2026); appeared on CNBC |
+| Richard Keuntje | London | [S] |
+| Sarah Otter | London | [S] |
+| Simon Schmincke | Berlin | [S] — backed Navan/Comtravo; podcast on FinTech investing |
+| Staffan Helgesson | Stockholm | [S] — backed Vesence (2025); 22 years at Creandum |
 
 ---
 
-### Staffan Helgesson
-| Field | Value |
-|---|---|
-| **Title** | General Partner |
-| **Focus** | Generalist — Nordic ecosystem |
-| **Background** | Swedish operator and investor; long tenure at Creandum |
-| **LinkedIn** | Unknown — verify |
-| **Twitter** | Unknown — verify |
-| **Contact Preference** | Warm intro preferred |
+## Partners & Specialist Roles
 
-**Notable Investments:**
-- Multiple Swedish seed-stage companies across verticals
+| Name | Title | Location | Notes |
+|---|---|---|---|
+| Daniel Blomquist | Fund Partner | Stockholm | [S] |
+| Lars Nordwall | Venture Partner | Stockholm | [S] |
+| Luka Caratsch | Venture Partner | Paris | [S] |
+| Maria Raga | Venture Partner | London | [S] — former CEO of Depop (Creandum portfolio exit) |
+| Peter Stilwell | Operating Partner | London | [S] — promoted to Operating Partner 2025-12-08 |
+| Peter Ramsey | Entrepreneur in Residence | London | [S] |
 
 ---
 
-## Partners & Principals
+## Operations & Support (non-investment)
 
-### Ted Persson
-| Field | Value |
-|---|---|
-| **Title** | Partner |
-| **Focus** | Seed, generalist |
-| **Background** | Unknown — verify |
-| **LinkedIn** | Unknown — verify |
-| **Twitter** | Unknown — verify |
-| **Contact Preference** | Unknown |
-
-**Notable Investments:**
-- Unknown — verify
+| Name | Title | Location |
+|---|---|---|
+| Alexandra Österman | Executive Assistant | Stockholm |
+| Beatrice Rellman Skantze | General Counsel | Stockholm |
+| Daniel Ovenden | Talent Team | London |
+| Emelie Odelfalk | Executive Assistant | Stockholm |
+| Felix Haas | Designer in Residence | Berlin |
+| George Goldhagen | Marketing Lead | London |
+| Ginger Hilb | Head of Offices | Berlin |
+| Gustav Lindqvist | Data Science Specialist | San Francisco |
+| Isabelle Sandblom | Executive Assistant | London |
+| Jesper Psilander | Legal Principal | Stockholm |
+| John Nilsson | Financial Controller | Stockholm |
+| Josefin Bladh | Senior Fund Controller | Stockholm |
+| Katarina Lilljequist Briem | Executive Assistant | Stockholm |
+| Lisa Selke | Head of Executive Support | Berlin |
+| Lovisa Wahlberg | Head of Events | Stockholm |
+| Michelle Coventry | VP Talent | London |
+| Naomi Kellner-Read | Office Manager | London |
+| Niclas Engström | Finance Director | Stockholm |
+| Oscar Ponce | Legal Counsel | Stockholm |
 
 ---
 

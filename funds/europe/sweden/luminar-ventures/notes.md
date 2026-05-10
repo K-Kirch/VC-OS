@@ -4,31 +4,36 @@
 
 | File | Complete |
 |---|---|
-| **profile.md** | No |
-| **thesis.md** | No |
-| **portfolio.md** | No |
-| **co-investors.md** | No |
-| **team.md** | No |
+| **profile.md** | Yes |
+| **thesis.md** | Yes |
+| **portfolio.md** | Yes |
+| **co-investors.md** | Partial — co-investor data not on website |
+| **team.md** | Yes |
 | **relationships.md** | No |
-| **brief.md** | No |
+| **brief.md** | Yes |
 
 | Field | Value |
 |---|---|
-| **Last Updated** | 2026-05-07 |
-| **Data Quality** | 1 |
+| **Last Updated** | 2026-05-10 |
+| **Data Quality** | 4 |
 
 ## Primary Sources
 
-- https://www.luminar.vc — JS-rendered, scraper returned no content
+- https://www.luminarventures.com (scraped 2026-05-10)
+- https://www.luminarventures.com/team (scraped 2026-05-10)
+- https://www.luminarventures.com/portfolio (scraped 2026-05-10)
+- https://www.luminarventures.com/about (scraped 2026-05-10)
 
 ## Open Questions
 
-- Verify correct website URL
-- Re-scrape with --playwright flag
-- Full profile, thesis, team, portfolio
+- Current fund number and exact fund size (AUM €125M confirmed, individual fund size unknown)
+- Co-investor data — requires Crunchbase or manual research
+- LinkedIn URLs for team members (present on website, not captured in scrape)
+- Founded year (estimated ~2019, unconfirmed)
 
 ## Changelog
 
 | Date | Change |
 |---|---|
-| 2026-05-07 | Stub created — scrape failed (JS-rendered site), needs Playwright re-run |
+| 2026-05-07 | Stub created — scrape failed (Unicode error) |
+| 2026-05-10 | Full population from website scrape after Unicode fix; all 4 pages successful |
