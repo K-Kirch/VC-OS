@@ -28,10 +28,13 @@ Protocol:
 import json
 import sys
 import os
+import concurrent.futures
 
 # Make scraper importable from the same directory
 sys.path.insert(0, os.path.dirname(__file__))
 from scraper import scrape_fund
+
+SCRAPE_TIMEOUT_SECONDS = 90  # hard cap per fund scrape
 
 # ---------------------------------------------------------------------------
 # Tool definitions
@@ -98,7 +101,16 @@ def handle_tools_call(params: dict) -> dict:
     if not name or not url:
         raise ValueError("Both 'name' and 'url' are required.")
 
-    result = scrape_fund(name, url, use_playwright=use_playwright)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+        future = executor.submit(scrape_fund, name, url, use_playwright)
+        try:
+            result = future.result(timeout=SCRAPE_TIMEOUT_SECONDS)
+        except concurrent.futures.TimeoutError:
+            result = (
+                f"SCRAPE TIMEOUT: {url} did not complete within {SCRAPE_TIMEOUT_SECONDS}s.\n"
+                f"The site may be very slow or blocking automated requests.\n"
+                f"Try --playwright, or populate this fund manually."
+            )
 
     return {
         "content": [{"type": "text", "text": result}]
