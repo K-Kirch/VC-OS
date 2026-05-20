@@ -1,5 +1,12 @@
 # VC OS — VC Fund Knowledge Hub
 
+## Operating fund
+
+We operate this VC OS for **Byfounders** (placeholder — to be confirmed).
+Canonical profile: `funds/europe/denmark/byfounders/brief.md`
+
+All IC-prep fit assessments, fund-fit ratings in `funds/<fund>/brief.md`, and sourcing prioritization dereference through this pointer. Do not duplicate the operating fund's data — link to the canonical files.
+
 ## What this workspace is
 
 An internal knowledge base of VC funds across Europe and the USA for operational decisions: syndicating deals, lining up the next round for portfolio companies, and competitive intelligence during live processes.
