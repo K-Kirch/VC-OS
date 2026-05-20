@@ -1,0 +1,19 @@
+{
+  "notion": {
+    "database_id": "365209d4-799c-8061-82f5-d4c700dcf4f2",
+    "database_name": "Potential Investments",
+    "parent_page_id": "365209d4-799c-8047-ab8c-d7d1cd098293",
+    "parent_page_name": "Baby VC - Investment Challenge",
+    "token_env_var": "NOTION_TOKEN"
+  },
+  "paths": {
+    "ic_prep": "IC-prep",
+    "template": "IC-prep/_template",
+    "deals": "IC-prep/deals",
+    "pipeline_logs": "IC-prep/_pipeline"
+  },
+  "pipeline": {
+    "reroute_cap": 3,
+    "stage_timeout_seconds": 1800
+  }
+}

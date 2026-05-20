@@ -1,1 +1,14 @@
-.claude/settings.local.json
+# Claude Code local state (any depth)
+**/.claude/settings.local.json
+
+# Python
+**/__pycache__/
+*.pyc
+
+# IC-prep runtime
+IC-prep/_pipeline/
+
+# Environment / secrets
+.env
+.env.*
+
