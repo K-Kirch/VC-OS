@@ -11,6 +11,16 @@ IC-prep/_pipeline/
 # IC-prep deal data (local only; not for remote)
 IC-prep/deals/*/dataroom/references/notion-page.md
 
+# Initialized live deal folders — local only; only example-deal/ is tracked
+IC-prep/deals/aavec-robotics/
+IC-prep/deals/cirqle-bio/
+IC-prep/deals/herd-robotics/
+IC-prep/deals/hykin-energy/
+IC-prep/deals/ndure/
+IC-prep/deals/prenaital/
+IC-prep/deals/proxi-biotech/
+IC-prep/deals/yngvi-bio/
+
 # Environment / secrets
 .env
 .env.*
