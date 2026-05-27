@@ -8,6 +8,9 @@
 # IC-prep runtime
 IC-prep/_pipeline/
 
+# IC-prep deal data (local only; not for remote)
+IC-prep/deals/*/dataroom/references/notion-page.md
+
 # Environment / secrets
 .env
 .env.*
