@@ -1,0 +1,58 @@
+EXECUTE IC-prep stage 1 (Intake) for deal slug: {slug}
+
+You are running headless (`claude -p`). Begin work immediately. Do not ask
+clarifying questions. The orchestrator has already substituted every variable
+in this prompt — do NOT read `tools/prompts/*.txt`; that template is not your
+input, this rendered text is.
+
+## Scope
+
+Deal folder:           IC-prep/deals/{slug}/
+Playbook:              IC-prep/playbooks/1-intake.md
+Notion source extract: IC-prep/deals/{slug}/dataroom/references/notion-page.md
+Operating fund:        described in root CLAUDE.md (already in your context)
+
+Edit ONLY files inside `IC-prep/deals/{slug}/`. Touch nothing else.
+
+## Steps (do all of these, in order)
+
+1. Read `IC-prep/playbooks/1-intake.md`.
+2. Read `IC-prep/deals/{slug}/deal.md` (current state).
+3. Read `IC-prep/deals/{slug}/dataroom/references/notion-page.md` (source).
+4. Fill `IC-prep/deals/{slug}/deal.md`:
+   - Replace every `<...>` placeholder with a real value derived from the
+     source, or `Unknown` if not derivable from the source, or `TBD` for
+     forward-looking dates you cannot infer.
+   - Do not invent numbers (round size, valuation, ownership) — `Unknown`
+     unless the source provides them.
+   - `sector` should pick from `_config/taxonomy.md` if it exists; otherwise
+     write a short descriptor (e.g., "Agtech robotics").
+5. Mandate check against the operating fund (root CLAUDE.md):
+   - Append a new `## Mandate check` section at the end of
+     `IC-prep/deals/{slug}/notes.md`.
+   - For each of stage / sector / geography / check size: write `Fit`,
+     `Possible`, or `Mismatch` with a one-line reason.
+   - If any are `Mismatch`, set the overall verdict to `Hard mismatch — escalate`.
+6. Update `notes.md`:
+   - Under `## Open questions`, replace the `<question>` placeholder with
+     3–7 concrete founder questions derived from gaps in the source.
+   - Do not modify the existing Sources or Changelog sections.
+7. Append a row to `IC-prep/deals/{slug}/review-log.md` using its existing
+   table format. Use today's date. Stage = 1. Result = `Pass` (or
+   `Blocked-<reason>`). Note = one short sentence.
+8. Update `IC-prep/deals/{slug}/deal.md`:
+   - On Pass: set `current_stage` from `Intake` to `Dataroom`.
+   - On Block: set `current_stage` to `Blocked-<short-reason>` and write a
+     `## Blocker` section in `notes.md` with the reason and what would unblock.
+
+## Style
+
+Be concise. Respect the file-length discipline in root CLAUDE.md. No prose
+where a table cell or bullet will do.
+
+## Final output
+
+After the file edits are committed to disk, print exactly one line as your
+final assistant message, then stop:
+
+STAGE_RESULT: <Pass|Blocked-reason>  next_stage=<Dataroom|Blocked-...>

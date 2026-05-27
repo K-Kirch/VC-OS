@@ -1,12 +1,11 @@
 """
 IC-prep orchestrator — drives deals through the IC-prep pipeline.
 
-Phase 1: init, queue, status. No Claude invocation yet — that lands in Phase 2.
-
 Usage:
     python tools/orchestrator.py queue
-    python tools/orchestrator.py init --row-id <notion-row-id>
-    python tools/orchestrator.py init --all
+    python tools/orchestrator.py init --row-id <notion-row-id>  | --all
+    python tools/orchestrator.py pull-content --row-id <id>     | --all
+    python tools/orchestrator.py run-stage <slug> <stage>       [--dry-run]
     python tools/orchestrator.py status [<slug>]
 """
 import argparse
@@ -18,8 +17,20 @@ from datetime import date
 from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from notion_client import NotionError, get_page, query_database
+from notion_client import NotionError, get_block_children, get_page, query_database
 from notion_mapping import notion_row_to_deal_fields
+from notion_render import render_blocks
+from stage_runner import StageRunError, detect_usage_limit, parse_stage_result_line, run_stage
+
+# Stage number -> (short name, expected next_stage on Pass)
+STAGE_DEFS = {
+    1: ("Intake", "Dataroom"),
+    2: ("Dataroom", "Research"),
+    3: ("Research", "Build"),
+    4: ("Build", "Review"),
+    5: ("Review", "Package"),
+    6: ("Package", "Decided"),
+}
 
 WORKSPACE_ROOT = Path(__file__).resolve().parents[1]
 CONFIG_PATH = Path(__file__).with_name("orchestrator.config.json")
@@ -98,6 +109,98 @@ def cmd_init(cfg, row_id=None, all_rows=False):
         fill_deal_md(deal_path / "deal.md", fields)
         init_notes_md(deal_path / "notes.md", fields)
         print(f"  init:    {slug}  ({row['id']})")
+
+
+def cmd_pull_content(cfg, row_id=None, all_rows=False):
+    """Fetch each Notion page's body blocks and write to the deal's dataroom."""
+    deals_dir = WORKSPACE_ROOT / cfg["paths"]["deals"]
+    if all_rows:
+        rows = query_database(cfg["notion"]["database_id"])
+    elif row_id:
+        rows = [get_page(row_id)]
+    else:
+        raise SystemExit("Provide --row-id or --all")
+
+    for row in rows:
+        fields = notion_row_to_deal_fields(row)
+        if not fields["company"] or fields["company"].strip().lower() == "template":
+            continue
+        slug = fields["slug"]
+        deal_path = deals_dir / slug
+        if not deal_path.exists():
+            print(f"  skip:    {slug}  (deal folder missing — run init first)")
+            continue
+
+        blocks = get_block_children(row["id"])
+        body_md = render_blocks(blocks, fetch_children=get_block_children).strip()
+
+        out_path = deal_path / "dataroom" / "references" / "notion-page.md"
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        header = (
+            f"# Notion source — {fields['company']}\n\n"
+            f"- Notion URL: {fields['notion_url']}\n"
+            f"- Notion row ID: {fields['notion_row_id']}\n"
+            f"- Pulled by: orchestrator pull-content\n\n"
+            "---\n\n"
+        )
+        if not body_md:
+            body_md = "_(no body content on the Notion page)_"
+        out_path.write_text(header + body_md + "\n", encoding="utf-8")
+        print(f"  pulled:  {slug}  ({len(blocks)} blocks -> {out_path.relative_to(WORKSPACE_ROOT)})")
+
+
+def cmd_run_stage(cfg, slug, stage_number, dry_run=False):
+    """Run a single IC-prep stage for one deal via headless Claude."""
+    if stage_number not in STAGE_DEFS:
+        raise SystemExit(f"Unknown stage: {stage_number} (valid: {sorted(STAGE_DEFS)})")
+    stage_name, expected_next = STAGE_DEFS[stage_number]
+
+    deals_dir = WORKSPACE_ROOT / cfg["paths"]["deals"]
+    deal_path = deals_dir / slug
+    if not deal_path.exists():
+        raise SystemExit(f"No deal at {deal_path}")
+
+    before_state = read_current_stage(deal_path)
+    print(f"  start:   {slug}  stage={stage_number} ({stage_name})  before_state={before_state}")
+
+    timeout = cfg.get("pipeline", {}).get("stage_timeout_seconds", 1800)
+    try:
+        result = run_stage(
+            slug=slug,
+            stage_number=stage_number,
+            deal_path=deal_path,
+            timeout_seconds=timeout,
+            dry_run=dry_run,
+        )
+    except StageRunError as e:
+        print(f"  ERROR:   {e}", file=sys.stderr)
+        sys.exit(2)
+
+    after_state = read_current_stage(deal_path)
+    summary_line = parse_stage_result_line(result["stdout_tail"]) or "(no STAGE_RESULT line)"
+    print(f"  done:    {slug}  exit={result['exit_code']}  after_state={after_state}", flush=True)
+    print(f"  summary: {summary_line}", flush=True)
+    print(f"  log:     {result['log_path'].relative_to(WORKSPACE_ROOT)}", flush=True)
+
+    if dry_run:
+        return
+
+    usage_msg = detect_usage_limit(result["stdout_tail"])
+    if usage_msg:
+        print(f"  USAGE-LIMIT: child claude was rejected -- {usage_msg}", flush=True)
+        print(f"  No edits were made. Retry the same command after the reset window.", flush=True)
+        return
+
+    if result["exit_code"] != 0:
+        print(f"  WARN: headless claude exited non-zero", flush=True)
+    if after_state == before_state:
+        print(f"  WARN: current_stage unchanged ({before_state}) -- stage may not have completed",
+              flush=True)
+    elif after_state.startswith("Blocked"):
+        print(f"  BLOCKED: {slug} -> {after_state}", flush=True)
+    elif after_state != expected_next:
+        print(f"  WARN: unexpected next state '{after_state}' (expected '{expected_next}')",
+              flush=True)
 
 
 def cmd_status(cfg, slug=None):
@@ -185,6 +288,16 @@ def main():
     grp.add_argument("--row-id")
     grp.add_argument("--all", action="store_true")
 
+    pull_p = sub.add_parser("pull-content")
+    grp2 = pull_p.add_mutually_exclusive_group(required=True)
+    grp2.add_argument("--row-id")
+    grp2.add_argument("--all", action="store_true")
+
+    rs_p = sub.add_parser("run-stage")
+    rs_p.add_argument("slug")
+    rs_p.add_argument("stage", type=int)
+    rs_p.add_argument("--dry-run", action="store_true")
+
     status_p = sub.add_parser("status")
     status_p.add_argument("slug", nargs="?")
 
@@ -195,6 +308,10 @@ def main():
             cmd_queue(cfg)
         elif args.cmd == "init":
             cmd_init(cfg, row_id=args.row_id, all_rows=args.all)
+        elif args.cmd == "pull-content":
+            cmd_pull_content(cfg, row_id=args.row_id, all_rows=args.all)
+        elif args.cmd == "run-stage":
+            cmd_run_stage(cfg, slug=args.slug, stage_number=args.stage, dry_run=args.dry_run)
         elif args.cmd == "status":
             cmd_status(cfg, slug=args.slug)
     except NotionError as e:

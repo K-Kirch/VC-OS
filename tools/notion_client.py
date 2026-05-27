@@ -66,3 +66,16 @@ def get_page(page_id):
 
 def get_database(database_id):
     return _request("GET", f"/databases/{database_id}")
+
+
+def get_block_children(block_id, page_size=100):
+    """Return all child blocks of a page or block, paginated."""
+    results = []
+    params = f"?page_size={page_size}"
+    while True:
+        data = _request("GET", f"/blocks/{block_id}/children{params}")
+        results.extend(data.get("results", []))
+        if not data.get("has_more"):
+            break
+        params = f"?page_size={page_size}&start_cursor={data['next_cursor']}"
+    return results
