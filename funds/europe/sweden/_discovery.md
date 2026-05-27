@@ -9,7 +9,7 @@
 
 | Category | Count |
 |---|---|
-| Fully populated (quality 3–4) | 5 — Creandum, EQT Ventures, EQT Growth, Luminar Ventures, Polar Structure |
+| Fully populated (quality 3–4) | 6 — Creandum, EQT Ventures, EQT Growth, Industrifonden, Luminar Ventures, Polar Structure |
 | Populated (quality 1–2) | 3 — Ampli Ventures (Q2), STOAF (Q2), Greens Ventures (Q1) |
 | Cross-referenced from other countries | 4 |
 | Confirmed missing, not yet added | ~26 |
@@ -240,6 +240,7 @@ Ampli Ventures and Greens Ventures are both Stockholm-HQ VCs founded in 2021–2
 | [EQT Growth](eqt-growth/brief.md) | 3 | Layer 7 find (Lovable cap table); €2.2B Fund I; 4 partners + 25+ team |
 | [EQT Ventures](eqt-ventures/brief.md) | 3 | SPA — homepage only; team/portfolio [M] |
 | [Greens Ventures](greens-ventures/brief.md) | 1 | Layer 7 find (Kovant cap table); minimal website; 1 person publicly identified |
+| [Industrifonden](industrifonden/brief.md) | 3 | T1 populated 2026-05-21; evergreen foundation, ~5B SEK AUM; full team + leadership scraped; portfolio selection only |
 | [Luminar Ventures](luminar-ventures/brief.md) | 4 | Full scrape [S] |
 | [Polar Structure](polar-structure/brief.md) | 3 | Layer 7 find (Einride cap table); evergreen infra investor; 16-person team scraped |
 | [STOAF](stoaf/brief.md) | 2 | Layer 7 find (AlixLabs cap table); Stockholm angel collective est. 2008; 4 GPs + 6 advisors |
@@ -263,7 +264,7 @@ Sourced from: Gilion VC Mapping, Seedtable, Shizune, manual research (2026-05-10
 
 | Fund | Website | Stage | Sector | Notes |
 |---|---|---|---|---|
-| Industrifonden | https://industrifonden.com | Seed–Series B | Generalist | Major semi-public fund; very active in Swedish ecosystem |
+| ~~Industrifonden~~ | ~~https://industrifonden.com~~ | — | — | ✓ Populated 2026-05-21 — see `industrifonden/` (Quality 3) |
 | Norrsken VC | https://norrsken.org/norrskenvc | Pre-Seed–Series C | Impact / Generalist | €320M Fund II closed 2024; co-founded by Niklas Adalberth (Klarna) |
 | Kinnevik | https://kinnevik.com | Series A–E | Consumer, Health, Fintech | Listed investment company; major growth-stage presence |
 | Almi Invest | https://almi.se/almi-invest | Pre-Seed–Seed | Generalist | Government-backed; regional offices across Sweden |
@@ -337,7 +338,7 @@ These appeared in Sweden fund lists but primary HQ may be elsewhere:
 
 Priority order for next scraping session:
 
-1. Industrifonden
+1. ~~Industrifonden~~ ✓ Done 2026-05-21
 2. Norrsken VC
 3. Kinnevik
 4. Almi Invest
